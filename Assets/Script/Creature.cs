@@ -42,18 +42,12 @@ public class Creature
         wantDirection.Normalize();
         if (nowDirection.normalized != wantDirection.normalized)
         {
-            float basisRotation = Vector2.Angle(wantDirection, Vector2.right) * Mathf.Deg2Rad;
-            Vector2 localNowDirection = new Vector2(
-                nowDirection.x * Mathf.Cos(basisRotation) + nowDirection.x * Mathf.Sin(basisRotation),
-                -nowDirection.x * Mathf.Sin(basisRotation) + nowDirection.y * Mathf.Cos(basisRotation));
-
-            float angel = Vector2.Angle(wantDirection, nowDirection);
-            //Debug.Log(angel);
+            float angel = Vector2.SignedAngle(wantDirection, nowDirection);
             if (Mathf.Abs(angel) > turnSpeed)
             {
-                angel = ((localNowDirection.y > 0)?-turnSpeed: turnSpeed) * Mathf.Deg2Rad;
+                angel = ((angel > 0)?-turnSpeed: turnSpeed) * Mathf.Deg2Rad;
                 nowDirection.x = nowDirection.x * Mathf.Cos(angel) - nowDirection.y * Mathf.Sin(angel);
-                nowDirection.y = nowDirection.x * Mathf.Sin(angel ) + nowDirection.y * Mathf.Cos(angel);
+                nowDirection.y = nowDirection.x * Mathf.Sin(angel) + nowDirection.y * Mathf.Cos(angel);
                 nowDirection.Normalize();
             }
             else
@@ -66,6 +60,20 @@ public class Creature
 
     public bool InFieldOfDetection(Creature target)
     {
-        return new Vector2(this.position.x - target.Position.x, this.position.y - target.Position.y).magnitude < this.radius;
+        if (new Vector2(this.position.x - target.Position.x, this.position.y - target.Position.y).magnitude < this.radius) { 
+            if(visibleCreature.IndexOf(target) == -1)
+            {
+                visibleCreature.Add(target);
+            }
+            return true;
+        }
+        else
+        {
+            if (visibleCreature.IndexOf(target) != -1)
+            {
+                visibleCreature.Remove(target);
+            }
+            return false;
+        }
     }
 }

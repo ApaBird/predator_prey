@@ -6,21 +6,27 @@ public class UnityControlSimulation : MonoBehaviour
 {
     private ControlSystemOfSimulation model;
     [SerializeField] List<UnityCreature> creatures;
-    [SerializeField] bool pause;
     [SerializeField] float speedSimulation = 1;
-    private float timeLastStep = 0;
+    [SerializeField] UIBar bar;
     private bool newSimulation = true;
+    private UnityCreature selectCreature;
+    private Camera camera;
 
     public void StartSimulation()
     {
         foreach(UnityCreature creature in creatures) {
             model.AddCreature(creature.StartSimulation());
         }
+        Debug.Log(selectCreature);
+        if (selectCreature != null)
+        {
+            bar.SetCreature(selectCreature, !newSimulation);
+        }
     }
 
     public void StartStop()
     {
-        pause = !pause;
+        model.Pause = !model.Pause;
         if (newSimulation)
         {
             StartSimulation();
@@ -35,23 +41,34 @@ public class UnityControlSimulation : MonoBehaviour
 
     public void Restart()
     {
-        model = new ControlSystemOfSimulation(null, false);
-        pause = model.Pause;
+        model = new ControlSystemOfSimulation((int)(speedSimulation * 1000) ,null, false);
+        foreach (UnityCreature creature in creatures)
+        {
+            creature.StopSimulation();
+        }
         newSimulation = true;
+        model.Pause = true;
     }
 
     private void Start()
     {
         Restart();
+        camera = Camera.main;
     }
 
     private void Update()
     {
-        if (!pause && Time.time - timeLastStep > speedSimulation)
+        if(Input.GetMouseButtonDown(0))
         {
-            NextStep();
-            timeLastStep = Time.time;
+            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                if (hit.collider.gameObject.GetComponent<UnityCreature>() != null)
+                {
+                    selectCreature = hit.collider.gameObject.GetComponent<UnityCreature>();
+                    bar.SetCreature(selectCreature, !newSimulation);
+                }
+            }
         }
     }
-
 }

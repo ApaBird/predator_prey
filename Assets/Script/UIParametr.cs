@@ -9,6 +9,7 @@ public class UIParametr : MonoBehaviour
     [SerializeField] private TMP_Text textValues;
     [SerializeField] private TMP_InputField inputField;
     private Parametr parametr;
+    private bool select = false;
     
 
     public void SetParametr(Parametr param)
@@ -24,6 +25,17 @@ public class UIParametr : MonoBehaviour
         if (float.TryParse(inputField.text, out valueFloat))
         {
             parametr.value = valueFloat;
+            Debug.Log(valueFloat);
         }
+    }
+
+    public void Select() => select = true;
+
+    public void Deselect() => select = false;
+
+    private void FixedUpdate()
+    {
+        if (!select)
+            textValues.text = parametr.value.ToString();
     }
 }

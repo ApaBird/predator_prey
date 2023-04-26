@@ -10,7 +10,7 @@ public class ControlSystemOfSimulation
 
     public bool Pause { get => pause; set => pause = value; }
 
-    public ControlSystemOfSimulation(List<Creature> creature = null, bool pause = true) {
+    public ControlSystemOfSimulation(int speedSimulation, List<Creature> creature = null, bool pause = true) {
         if (creature == null)
             this.creatures = new List<Creature>();
         else
@@ -19,13 +19,22 @@ public class ControlSystemOfSimulation
         this.pause = pause;
 
         tm = new TimerCallback(Step);
-        Timer timer = new Timer(tm, null, 0, 100);
+        Timer timer = new Timer(tm, null, 0, speedSimulation);
     }
 
     public void StepSimulation()
     {
         foreach (Creature creature in creatures)
             creature.Step();
+
+        foreach (Creature creature in creatures){
+            foreach (Creature target in creatures){
+                if(creature != target)
+                {
+                    creature.InFieldOfDetection(target);
+                }
+            }
+        }
     }
 
     public void Step(object _)

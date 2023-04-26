@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{BCC79DA8-DF64-7B19-B160-AC84D0568593}</ProjectGuid>
+    <ProjectGuid>{97BF0C7F-9A8A-4B9C-50F7-52DA3CE9DB6C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -58,14 +58,17 @@
   <ItemGroup>
     <Compile Include="Assets\Script\ListMovment.cs" />
     <Compile Include="Assets\Script\SimpleMove.cs" />
+    <Compile Include="Assets\Script\VectorRender.cs" />
     <Compile Include="Assets\Script\UIParametr.cs" />
     <Compile Include="Assets\Script\UnityCreature.cs" />
     <Compile Include="Assets\Script\ILogicMove.cs" />
+    <Compile Include="Assets\Script\Parametr.cs" />
     <Compile Include="Assets\Script\ControlSystemOfSimulation.cs" />
     <Compile Include="Assets\Script\Creature.cs" />
     <Compile Include="Assets\Script\UnityControlSimulation.cs" />
+    <Compile Include="Assets\Script\CircleRender.cs" />
     <Compile Include="Assets\Script\UIBar.cs" />
-    <Compile Include="Assets\Script\Parametr.cs" />
+    <Compile Include="Assets\Script\Exit.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

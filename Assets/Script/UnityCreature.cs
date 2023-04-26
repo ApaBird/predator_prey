@@ -1,9 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class UnityCreature : MonoBehaviour
 {
+    private Camera camera;
+
+    [SerializeField] private CircleRender circle;
+    [SerializeField] private VectorRender lineNowDirect;
+    [SerializeField] private VectorRender lineWantDirect;
+
     [SerializeField] private Parametr speed = new Parametr("Скорость", 1);
     [SerializeField] private Parametr turnSpeed = new Parametr("Скорость поворота", 5);
     [SerializeField] private Parametr radius = new Parametr("Радиус", 1);
@@ -12,6 +19,7 @@ public class UnityCreature : MonoBehaviour
     [SerializeField] private Parametr startpositionX = new Parametr("Позиция по X", 0);
     [SerializeField] private Parametr startpositionY = new Parametr("Позиция по Y", 0);
     [SerializeField] private Parametr directionAngel = new Parametr("Угол направления", 0);
+    [SerializeField] private Parametr startDirectionAngel = new Parametr("Угол направления", 0);
     [SerializeField] private Parametr angelDetection = new Parametr("Угол обзора", 360);
     [SerializeField] private ILogicMove logicMove = new SimpleMove();
     private Creature creature = null;
@@ -20,18 +28,20 @@ public class UnityCreature : MonoBehaviour
     public Parametr TurnSpeed { get => turnSpeed; set => turnSpeed = value; }
     public Parametr Radius { get => radius; set => radius = value; }
     public ILogicMove LogicMove { get => logicMove; set => logicMove = value; }
-    public Parametr PositionX { get => positionX; set => positionX = value; }
-    public Parametr PositionY { get => positionY; set => positionY = value; }
-    public Parametr DirectionAngel { get => directionAngel; set => directionAngel = value; }
+    public Parametr PositionX { get => positionX; }
+    public Parametr PositionY { get => positionY; }
+    public Parametr DirectionAngel { get => directionAngel; }
     public Parametr StartpositionX { get => startpositionX; set => startpositionX = value; }
     public Parametr StartpositionY { get => startpositionY; set => startpositionY = value; }
     public Parametr AngelDetection { get => angelDetection; set => angelDetection = value; }
+    public Parametr StartDirectionAngel { get => startDirectionAngel; set => startDirectionAngel = value; }
 
     public Creature StartSimulation()
     {
         positionX.value = startpositionX.value;
         positionY.value = startpositionY.value;
-        Vector2 direction = new Vector2(Mathf.Cos(directionAngel.value * Mathf.Deg2Rad), Mathf.Sin(directionAngel.value * Mathf.Deg2Rad));
+        directionAngel.value = startDirectionAngel.value;
+        Vector2 direction = new Vector2(Mathf.Cos(startDirectionAngel.value * Mathf.Deg2Rad), Mathf.Sin(startDirectionAngel.value * Mathf.Deg2Rad));
         creature = new Creature(new Vector2(startpositionX.value, startpositionY.value), direction, TurnSpeed.value, Radius.value, this.logicMove, Speed.value, AngelDetection.value);
         return creature;
     }
@@ -41,17 +51,22 @@ public class UnityCreature : MonoBehaviour
         creature = null;
     }
 
-
-    public List<Parametr> Info()
+    public List<Parametr> GetSimulationInfo()
     {
-        return new List<Parametr>() { Speed, TurnSpeed, StartpositionX, StartpositionY, DirectionAngel, Radius, AngelDetection }; ;
+        return new List<Parametr>() { Speed, TurnSpeed, PositionX, PositionY, DirectionAngel, Radius, AngelDetection }; ;
+    }
+
+    public List<Parametr> GetInfo()
+    {
+        return new List<Parametr>() { Speed, TurnSpeed, StartpositionX, StartpositionY, StartDirectionAngel, Radius, AngelDetection }; ;
     }
 
     public void Start()
     {
         startpositionX.value = transform.position.x;
         startpositionY.value = transform.position.z;
-        directionAngel.value = transform.eulerAngles.y;
+        startDirectionAngel.value = transform.eulerAngles.y;
+        camera = Camera.main;
     }
 
     public void Update()
@@ -59,6 +74,10 @@ public class UnityCreature : MonoBehaviour
         if (creature == null)
         {
             transform.position = new Vector3(startpositionX.value, transform.position.y, startpositionY.value);
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, -startDirectionAngel.value, transform.eulerAngles.z);
+
+            if (lineNowDirect != null)
+                lineNowDirect.DrawVector(new Vector2(Mathf.Cos(startDirectionAngel.value * Mathf.Deg2Rad), Mathf.Sin(startDirectionAngel.value * Mathf.Deg2Rad)), transform.position, 10);
         }
         else
         {
@@ -68,7 +87,7 @@ public class UnityCreature : MonoBehaviour
             {
                 directionAngel.value = Mathf.Acos(creature.NowDirection.x) * Mathf.Rad2Deg;
             }
-            else if (creature.NowDirection.x > 0)
+            else
             {
                 directionAngel.value = -Mathf.Acos(creature.NowDirection.x) * Mathf.Rad2Deg;
             }
@@ -76,7 +95,32 @@ public class UnityCreature : MonoBehaviour
             //Instantiate<GameObject>(this.gameObject).GetComponent<UnityCreature>().enabled = false;
 
             transform.position = new Vector3(positionX.value, transform.position.y, positionY.value);
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, -directionAngel.value, transform.eulerAngles.z);
+
+            if (lineWantDirect != null)
+                lineWantDirect.DrawVector(creature.WantDirection, transform.position, 10);
+            if (lineNowDirect != null)
+                lineNowDirect.DrawVector(creature.NowDirection, transform.position, 10);
+            
         }
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, -directionAngel.value, transform.eulerAngles.z);
+        if (circle != null)
+            circle.DrawCircle(radius.value, transform.position);
+    }
+
+    private void OnMouseDrag()
+    {
+        if (creature == null)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
+                    startpositionX.value = hit.point.x;
+                    startpositionY.value = hit.point.z;
+                }
+                
+            }
+        }
     }
 }
