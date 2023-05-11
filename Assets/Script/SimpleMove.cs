@@ -16,4 +16,9 @@ public class SimpleMove : ILogicMove
             return creature.NowDirection;
         }
     }
+
+    public string GetName()
+    {
+        return "Погоня";
+    }
 }

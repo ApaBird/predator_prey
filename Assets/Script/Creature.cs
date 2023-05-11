@@ -11,9 +11,11 @@ public class Creature
     private float turnSpeed;
     private float radius;
     private Vector2 position;
+    private float height;
     private float angelDetection;
     private List<Creature> visibleCreature;
     private ILogicMove logicMove;
+    private Terrain terrain;
     public float Speed { get => speed; }
     public Vector2 NowDirection { get => nowDirection; }
     public Vector2 WantDirection { get => wantDirection; }
@@ -23,8 +25,10 @@ public class Creature
     public ILogicMove LogicMove { get => logicMove; }
     public float AngelDetection { get => angelDetection; }
     public List<Creature> VisibleCreature { get => visibleCreature; set => visibleCreature = value; }
+    public Terrain Terrain { get => terrain;}
+    public float Height { get => height;}
 
-    public Creature(Vector2 pos, Vector2 direction, float turn, float r, ILogicMove move, float sp, float angel) { 
+    public Creature(Vector2 pos, Vector2 direction, float turn, float r, ILogicMove move, float sp, float angel, Terrain tr) { 
         this.logicMove = move;
         this.speed = sp;
         this.position = pos;
@@ -34,6 +38,8 @@ public class Creature
         this.nowDirection = direction;
         this.angelDetection = angel;
         this.visibleCreature = new List<Creature>();
+        this.terrain = tr;
+        this.height = 1;
     }
 
     public void Step()
@@ -56,6 +62,20 @@ public class Creature
             }
         }
         position += nowDirection * speed;
+        
+        if (terrain.Height - 1 < position.y)
+            position.y = 1;
+
+        if (position.y < 1)
+            position.y = terrain.Height - 1;
+
+        if (terrain.Width - 1 < position.x)
+            position.x = 1;
+
+        if (position.x < 1)
+            position.x = terrain.Width - 1;
+
+        height = terrain.GetHeightDot(position);
     }
 
     public bool InFieldOfDetection(Creature target)

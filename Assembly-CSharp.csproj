@@ -56,19 +56,26 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Script\ListMovment.cs" />
     <Compile Include="Assets\Script\SimpleMove.cs" />
     <Compile Include="Assets\Script\VectorRender.cs" />
     <Compile Include="Assets\Script\UIParametr.cs" />
+    <Compile Include="Assets\Script\UnityTerrain.cs" />
+    <Compile Include="Assets\Script\Terrain.cs" />
     <Compile Include="Assets\Script\UnityCreature.cs" />
     <Compile Include="Assets\Script\ILogicMove.cs" />
     <Compile Include="Assets\Script\Parametr.cs" />
+    <Compile Include="Assets\Script\Exit.cs" />
     <Compile Include="Assets\Script\ControlSystemOfSimulation.cs" />
     <Compile Include="Assets\Script\Creature.cs" />
     <Compile Include="Assets\Script\UnityControlSimulation.cs" />
+    <Compile Include="Assets\Script\UIParametrDropBox.cs" />
     <Compile Include="Assets\Script\CircleRender.cs" />
     <Compile Include="Assets\Script\UIBar.cs" />
-    <Compile Include="Assets\Script\Exit.cs" />
+    <Compile Include="Assets\Script\ParametrList.cs" />
+    <Compile Include="Assets\Script\LogicMoveLocator.cs" />
+    <Compile Include="Assets\Script\PreemptionMove.cs" />
+    <Compile Include="Assets\Script\ForwardMove.cs" />
+    <Compile Include="Assets\Script\CameraControler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

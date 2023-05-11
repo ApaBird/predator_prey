@@ -11,13 +11,15 @@ public class UnityControlSimulation : MonoBehaviour
     private bool newSimulation = true;
     private UnityCreature selectCreature;
     private Camera camera;
+    private Terrain terrain;
+    [SerializeField] private UnityTerrain unityTerrain;
 
     public void StartSimulation()
     {
         foreach(UnityCreature creature in creatures) {
-            model.AddCreature(creature.StartSimulation());
+            model.AddCreature(creature.StartSimulation(terrain));
         }
-        Debug.Log(selectCreature);
+
         if (selectCreature != null)
         {
             bar.SetCreature(selectCreature, !newSimulation);
@@ -41,7 +43,7 @@ public class UnityControlSimulation : MonoBehaviour
 
     public void Restart()
     {
-        model = new ControlSystemOfSimulation((int)(speedSimulation * 1000) ,null, false);
+        model = new ControlSystemOfSimulation((int)(speedSimulation * 1000), terrain ,null, false);
         foreach (UnityCreature creature in creatures)
         {
             creature.StopSimulation();
@@ -52,6 +54,16 @@ public class UnityControlSimulation : MonoBehaviour
 
     private void Start()
     {
+        terrain = new Terrain(100, 100);
+        unityTerrain.Terrain = terrain;
+        for(int i = 25; i < terrain.Height-25; i++)
+        {
+            for (int j = 25; j < terrain.Width-25; j++)
+            {
+                terrain.ChangeHeight(i, j, 3);
+            }
+        }
+        unityTerrain.GenerateMesh();
         Restart();
         camera = Camera.main;
     }
