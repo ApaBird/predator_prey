@@ -43,6 +43,8 @@ public class UnityControlSimulation : MonoBehaviour
 
     public void Restart()
     {
+        if (model != null)
+            model.Pause = true;
         model = new ControlSystemOfSimulation((int)(speedSimulation * 1000), terrain ,null, false);
         foreach (UnityCreature creature in creatures)
         {
@@ -54,15 +56,13 @@ public class UnityControlSimulation : MonoBehaviour
 
     private void Start()
     {
-        terrain = new Terrain(100, 100);
-        unityTerrain.Terrain = terrain;
-        for(int i = 25; i < terrain.Height-25; i++)
+        foreach (GameObject i in GameObject.FindGameObjectsWithTag("Creature"))
         {
-            for (int j = 25; j < terrain.Width-25; j++)
-            {
-                terrain.ChangeHeight(i, j, 3);
-            }
+            creatures.Add(i.GetComponent<UnityCreature>());
         }
+        terrain = TerrainCreate.GetMap();
+        unityTerrain.Terrain = terrain;
+        
         unityTerrain.GenerateMesh();
         Restart();
         camera = Camera.main;

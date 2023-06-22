@@ -56,26 +56,39 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Script\SimpleMove.cs" />
+    <Compile Include="Assets\Script\SectorRender.cs" />
+    <Compile Include="Assets\Script\SectorZone.cs" />
+    <Compile Include="Assets\Script\AngleRender.cs" />
+    <Compile Include="Assets\Script\ParametrList.cs" />
+    <Compile Include="Assets\Script\Move\ForwardMove.cs" />
+    <Compile Include="Assets\Script\Move\SimpleMove.cs" />
     <Compile Include="Assets\Script\VectorRender.cs" />
     <Compile Include="Assets\Script\UIParametr.cs" />
     <Compile Include="Assets\Script\UnityTerrain.cs" />
     <Compile Include="Assets\Script\Terrain.cs" />
     <Compile Include="Assets\Script\UnityCreature.cs" />
     <Compile Include="Assets\Script\ILogicMove.cs" />
+    <Compile Include="Assets\Script\Move\ParalelMove.cs" />
+    <Compile Include="Assets\Script\MethodDetectionLocator.cs" />
     <Compile Include="Assets\Script\Parametr.cs" />
     <Compile Include="Assets\Script\Exit.cs" />
     <Compile Include="Assets\Script\ControlSystemOfSimulation.cs" />
+    <Compile Include="Assets\Script\CameraControler.cs" />
+    <Compile Include="Assets\Script\LogicMoveLocator.cs" />
+    <Compile Include="Assets\Script\Move\DodgeCircle.cs" />
+    <Compile Include="Assets\Script\Move\DodgeAngle.cs" />
     <Compile Include="Assets\Script\Creature.cs" />
+    <Compile Include="Assets\Script\CircleZone.cs" />
     <Compile Include="Assets\Script\UnityControlSimulation.cs" />
+    <Compile Include="Assets\Script\Move\PreemptionMove.cs" />
+    <Compile Include="Assets\Script\Move\DodgeSector.cs" />
     <Compile Include="Assets\Script\UIParametrDropBox.cs" />
+    <Compile Include="Assets\Script\AngelDetection.cs" />
     <Compile Include="Assets\Script\CircleRender.cs" />
     <Compile Include="Assets\Script\UIBar.cs" />
-    <Compile Include="Assets\Script\ParametrList.cs" />
-    <Compile Include="Assets\Script\LogicMoveLocator.cs" />
-    <Compile Include="Assets\Script\PreemptionMove.cs" />
-    <Compile Include="Assets\Script\ForwardMove.cs" />
-    <Compile Include="Assets\Script\CameraControler.cs" />
+    <Compile Include="Assets\Script\IZoneDetection.cs" />
+    <Compile Include="Assets\Script\TerrainCreate.cs" />
+    <Compile Include="Assets\Script\Move\WolfHunter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -15,14 +15,14 @@ public class ControlSystemOfSimulation
         if (creature == null)
             this.creatures = new List<Creature>();
         else
-            this.creatures = creature;
+            this.creatures = creature;//должен копировать а не присваивать
 
         this.pause = pause;
 
         terrain = tr;
 
-        tm = new TimerCallback(Step);
-        Timer timer = new Timer(tm, null, 0, speedSimulation);
+        tm = new TimerCallback(Step);//создавать экземпляр делегата прямо тут
+        Timer timer = new Timer(tm, null, 0, speedSimulation);//добавить отдельное поле скорости симуляции и записывать в поле таймер для будущего изменения.
     }
 
     public void StepSimulation()
@@ -51,6 +51,11 @@ public class ControlSystemOfSimulation
     public void AddCreature(Creature creature) {
         creatures.Add(creature);
     }
+    //еще нужен метод для удаления существ из списка
+
+    //метод для изменения карты
+
+    //метод для смены скорости симуляции
 
     public List<Creature> GetCreatures() => creatures;
 }

@@ -16,6 +16,8 @@ public class Creature
     private List<Creature> visibleCreature;
     private ILogicMove logicMove;
     private Terrain terrain;
+    private IZoneDetection methodDetection;
+    private int tag = 1;
     public float Speed { get => speed; }
     public Vector2 NowDirection { get => nowDirection; }
     public Vector2 WantDirection { get => wantDirection; }
@@ -27,8 +29,10 @@ public class Creature
     public List<Creature> VisibleCreature { get => visibleCreature; set => visibleCreature = value; }
     public Terrain Terrain { get => terrain;}
     public float Height { get => height;}
+    public IZoneDetection MethodDetection { get => methodDetection; }
+    public int Tag { get => tag; set => tag = value; }
 
-    public Creature(Vector2 pos, Vector2 direction, float turn, float r, ILogicMove move, float sp, float angel, Terrain tr) { 
+    public Creature(Vector2 pos, Vector2 direction, float turn, float r, ILogicMove move, float sp, float angel, Terrain tr, IZoneDetection method) { 
         this.logicMove = move;
         this.speed = sp;
         this.position = pos;
@@ -40,6 +44,7 @@ public class Creature
         this.visibleCreature = new List<Creature>();
         this.terrain = tr;
         this.height = 1;
+        this.methodDetection = method;
     }
 
     public void Step()
@@ -61,8 +66,10 @@ public class Creature
                 nowDirection = wantDirection;
             }
         }
-        position += nowDirection * speed;
-        
+        float heightDot = terrain.GetHeightDot(position + nowDirection * speed);
+        float p = (nowDirection * speed).magnitude / new Vector3(nowDirection.x * speed, heightDot - height, nowDirection.y * speed).magnitude;
+        position += nowDirection * speed * p;
+
         if (terrain.Height - 1 < position.y)
             position.y = 1;
 
@@ -80,7 +87,7 @@ public class Creature
 
     public bool InFieldOfDetection(Creature target)
     {
-        if (new Vector2(this.position.x - target.Position.x, this.position.y - target.Position.y).magnitude < this.radius) { 
+        if (MethodDetection.InZone(this, target)) { 
             if(visibleCreature.IndexOf(target) == -1)
             {
                 visibleCreature.Add(target);

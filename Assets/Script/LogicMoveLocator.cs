@@ -9,9 +9,14 @@ public static class LogicMoveLocator
         {"Simple Move", new SimpleMove() },
         {"Predict Move", new PreemptionMove() },
         {"Forward Move", new ForwardMove() },
+        {"Parallel Move", new ParalelMove() },
+        {"Dodge Cirñle", new DodgeCircle() },
+        {"Dodge Sector", new DodgeSector() },
+        {"Angel Dodge", new DodgeAngle() },
+        {"Wolf", new WolfHunter() },
     };
 
-    public static List<string> GetNameLogicMove()
+    public static List<string> GetNames()
     {
         List<string> list = new List<string>();
         foreach (string name in logicsMove.Keys)
@@ -21,7 +26,7 @@ public static class LogicMoveLocator
         return list;
     }
 
-    public static ILogicMove GetLogicMoveByName(string name)
+    public static ILogicMove GetElemetByName(string name)
     {
         return logicsMove[name];
     }

@@ -5,9 +5,10 @@ using UnityEngine.UIElements;
 
 public class UnityCreature : MonoBehaviour
 {
-    [SerializeField] private CircleRender circle;
+    [SerializeField] private LineRenderer lineZone;
     [SerializeField] private VectorRender lineNowDirect;
     [SerializeField] private VectorRender lineWantDirect;
+    [SerializeField] private LineRenderer traectory;
 
     [SerializeField] private Parametr speed = new Parametr("Скорость", 1);
     [SerializeField] private Parametr turnSpeed = new Parametr("Скорость поворота", 5);
@@ -19,7 +20,9 @@ public class UnityCreature : MonoBehaviour
     [SerializeField] private Parametr directionAngel = new Parametr("Угол направления", 0);
     [SerializeField] private Parametr startDirectionAngel = new Parametr("Угол направления", 0);
     [SerializeField] private Parametr angelDetection = new Parametr("Угол обзора", 360);
-    [SerializeField] private ParametrList logicMove = new ParametrList("Алгоритм движения", LogicMoveLocator.GetNameLogicMove());
+    [SerializeField] private ParametrList logicMove = new ParametrList("Алгоритм движения", LogicMoveLocator.GetNames());
+    [SerializeField] private ParametrList methodDetection = new ParametrList("Зона обнаружения", MethodDetectionLocator.GetNames());
+    [SerializeField] private Parametr typeCreature = new Parametr("Тег", 1);
     [SerializeField] private Parametr height = new Parametr("Высота", 1);
     private Creature creature = null;
 
@@ -35,15 +38,28 @@ public class UnityCreature : MonoBehaviour
     public Parametr StartDirectionAngel { get => startDirectionAngel; set => startDirectionAngel = value; }
     public ParametrList LogicMove { get => logicMove; set => logicMove = value; }
     public Parametr Height { get => height; set => height = value; }
+    public ParametrList MethodDetection { get => methodDetection; set => methodDetection = value; }
+    public LineRenderer LineZone { get => lineZone; }
+    public Creature Creature { get => creature; }
+    public Parametr TypeCreature { get => typeCreature; set => typeCreature = value; }
 
     public Creature StartSimulation(Terrain tr)
+    {
+        return StartSimulation(tr, creature);
+    }
+
+    public Creature StartSimulation(Terrain tr, Creature creature)
     {
         positionX.value = startpositionX.value;
         positionY.value = startpositionY.value;
         directionAngel.value = startDirectionAngel.value;
         Vector2 direction = new Vector2(Mathf.Cos(startDirectionAngel.value * Mathf.Deg2Rad), Mathf.Sin(startDirectionAngel.value * Mathf.Deg2Rad));
-        creature = new Creature(new Vector2(startpositionX.value, startpositionY.value), direction, TurnSpeed.value, Radius.value, LogicMoveLocator.GetLogicMoveByName(logicMove.selected), Speed.value, AngelDetection.value, tr);
-        return creature;
+        this.creature = new Creature(new Vector2(startpositionX.value, startpositionY.value), direction,
+                                TurnSpeed.value, Radius.value, LogicMoveLocator.GetElemetByName(logicMove.selected),
+                                Speed.value, AngelDetection.value, tr, MethodDetectionLocator.GetElemetByName(methodDetection.selected));
+        this.creature.Tag = (int)typeCreature.value;
+        traectory.positionCount = 0;
+        return this.creature;
     }
 
     public void StopSimulation()
@@ -63,12 +79,12 @@ public class UnityCreature : MonoBehaviour
 
     public List<Parametr> GetInfoParametrs()
     {
-        return new List<Parametr>() { Speed, TurnSpeed, StartpositionX, StartpositionY, StartDirectionAngel, Radius, AngelDetection };
+        return new List<Parametr>() { Speed, TurnSpeed, StartpositionX, StartpositionY, StartDirectionAngel, Radius, AngelDetection, TypeCreature };
     }
 
     public List<ParametrList> GetInfoParametrsList()
     {
-        return new List<ParametrList>() { LogicMove };
+        return new List<ParametrList>() { LogicMove, MethodDetection};
     }
 
     public void Start()
@@ -102,7 +118,11 @@ public class UnityCreature : MonoBehaviour
                 directionAngel.value = -Mathf.Acos(creature.NowDirection.x) * Mathf.Rad2Deg;
             }
             //Включить отрисовку траектории
-            //Instantiate<GameObject>(this.gameObject).GetComponent<UnityCreature>().enabled = false;
+            if(traectory != null)
+            {
+                traectory.positionCount++;
+                traectory.SetPosition(traectory.positionCount - 1, this.gameObject.transform.position);
+            }
 
             transform.position = new Vector3(positionX.value, creature.Height + 0.1f, positionY.value);
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, -directionAngel.value, transform.eulerAngles.z);
@@ -111,9 +131,9 @@ public class UnityCreature : MonoBehaviour
                 lineWantDirect.DrawVector(creature.WantDirection, transform.position, 10);
             if (lineNowDirect != null)
                 lineNowDirect.DrawVector(creature.NowDirection, transform.position, 10);
-            
+            MethodDetectionLocator.GetElemetByName(methodDetection.selected).DrawZone(this);
         }
-        if (circle != null)
-            circle.DrawCircle(radius.value, transform.position);
+
+        
     }
 }

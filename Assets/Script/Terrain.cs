@@ -6,9 +6,9 @@ public class Terrain
 {
     private List<List<float>> map;
     private float width;
-    private float height;
+    private float height;//переименовать в длину
     public float Width { get => width; set => width = value; }
-    public float Height { get => height; set => height = value; }
+    public float Height { get => height; set => height = value; }//переименовать в длину
 
     public Terrain(int width, int height)
     {
@@ -26,7 +26,7 @@ public class Terrain
         }
     }
 
-    public void ChangeHeight(int x, int z, float num)
+    public void ChangeHeight(int x, int z, float num) //Релизовать SetHeight для точечного выставления высоты
     {
         if(x > 0 && x < width && z > 0 && z < height)
             map[x][z] += num;
@@ -46,7 +46,7 @@ public class Terrain
             Vector3 dot1 = new Vector3((int)Mathf.Floor(x+1), map[(int)Mathf.Floor(x+1)][(int)Mathf.Floor(z)], (int)Mathf.Floor(z));
             Vector3 dot2 = new Vector3((int)Mathf.Floor(x), map[(int)Mathf.Floor(x)][(int)Mathf.Floor(z+1)], (int)Mathf.Floor(z+1));
             Vector3 dot3;
-            if (Mathf.Abs(x - z) < 0.5f)
+            if (Mathf.Abs(x - z) < 0.5f)//неверная формула, верная x - z > 0
             {
                 dot3 = new Vector3((int)Mathf.Floor(x + 1), map[(int)Mathf.Floor(x + 1)][(int)Mathf.Floor(z+1)], (int)Mathf.Floor(z + 1));
             }
@@ -61,7 +61,6 @@ public class Terrain
         }
         else if ((x == 0 || x == width) && (z == 0 || z == height))
         {
-            Debug.Log(map[(int)x][(int)z]);
             return map[(int)x][(int)z];
         }
         else if (x == 0 || x == width || z == 0 || z == height)
@@ -70,25 +69,22 @@ public class Terrain
             Vector3 dot2;
             if(x == 0 || x == width)
             {
-                dot1 = new Vector3((int)x, map[(int)x][(int)Mathf.Ceil(z)], (int)z);
-                dot2 = new Vector3((int)x, map[(int)x][(int)Mathf.Floor(z)], (int)z);
+                dot1 = new Vector3((int)x, map[(int)x][(int)Mathf.Ceil(z)], (int)Mathf.Ceil(z));
+                dot2 = new Vector3((int)x, map[(int)x][(int)Mathf.Floor(z)], (int)Mathf.Floor(z));
+                Vector3 p = dot1 - dot2;
+                return ((z - dot1.z) * p.y) / p.z + dot1.y;
             }
             else
             {
-                dot1 = new Vector3((int)x, map[(int)Mathf.Ceil(x)][(int)z], (int)z);
-                dot2 = new Vector3((int)x, map[(int)Mathf.Floor(x)][(int)z], (int)z);
+                dot1 = new Vector3((int)Mathf.Ceil(x), map[(int)Mathf.Ceil(x)][(int)z], (int)z);
+                dot2 = new Vector3((int)Mathf.Ceil(x), map[(int)Mathf.Floor(x)][(int)z], (int)z);
+                Vector3 p = dot1 - dot2;
+                return ((x - dot1.x) * p.y) / p.x + dot1.y;
             }
-
-            Vector3 p = dot1 - dot2;
-
             //y = ((z - z0)*p2)/p3 + y0 где z0,y0 - точка линии, а p2,p3 - направляющий вектор
-
-            Debug.Log(((z - dot1.z) * p.y) / p.z + dot1.y);
-            return ((z - dot1.z) * p.y) / p.z + dot1.y;
         }
         else
         {
-            Debug.Log(1);
             return 1;
         }
     }
